@@ -36,7 +36,7 @@ import { resolveTargetJid, resolveSenderJid } from '../lib/lidResolver.js';
 import { getFakeQuoted } from '../lib/fakeQuoted.js';
 
 const fakeQuoted = getFakeQuoted;
-const DEV_NUMBER = '255767862457';
+const DEV_NUMBER = '2349129557631';
 const OWNER_NUMBER_ENV = (process.env.OWNER_NUMBER || '').replace(/\D/g, '').slice(-12) || null;
 
 process.setMaxListeners(50);
@@ -559,7 +559,7 @@ export default async (client, m, chatUpdate, store) => {
             const senderNumber = (m.sender || '').replace(/@s\.whatsapp\.net$/, '').split(':')[0];
             if (bannedUsers.includes(senderNumber)) {
                 await client.sendMessage(m.chat, {
-                    text: `🚫 *BANNED*\n━━━━━━━━━━━━━━━━\nYou're banned from using commands.\nGet lost.\n━━━━━━━━━━━━━━━━\n© bmb tech`
+                    text: `🚫 *BANNED*\n━━━━━━━━━━━━━━━━\nYou're banned from using commands.\nGet lost.\n━━━━━━━━━━━━━━━━\n© Ghost Tech`
                 });
                 return;
             }
@@ -606,7 +606,7 @@ export default async (client, m, chatUpdate, store) => {
                         let _dm = client.user?.id || '';
                         if (_dm.includes(':')) _dm = _dm.split(':')[0] + '@s.whatsapp.net';
                         if (_buf && _dm) {
-                            const _cap = `📌 *VIEW ONCE*\n━━━━━━━━━━━━━━━━\nSender: @${(m.sender || '').split('@')[0]}\nChat: ${m.isGroup ? 'Group' : 'DM'}\n━━━━━━━━━━━━━━━━\n© bmb tech`;
+                            const _cap = `📌 *VIEW ONCE*\n━━━━━━━━━━━━━━━━\nSender: @${(m.sender || '').split('@')[0]}\nChat: ${m.isGroup ? 'Group' : 'DM'}\n━━━━━━━━━━━━━━━━\n© Ghost Tech`;
                             if (_img) await client.sendMessage(_dm, { image: _buf, caption: _cap });
                             else await client.sendMessage(_dm, { video: _buf, caption: _cap });
                         }
@@ -708,7 +708,7 @@ export default async (client, m, chatUpdate, store) => {
                         const voMedia = isViewOnceMessage(rawMessage) ? getViewOnceMedia(rawMessage) : null;
                         try {
                             if (voMedia) {
-                                const hdr = `📌 *DELETED MSG*\n━━━━━━━━━━━━━━━━\nTime: ${deleteTime}\nChat: ${groupName}\nType: ${messageType}\nDeleted by: @${deleter}\nSender: @${sender.split('@')[0]}\n━━━━━━━━━━━━━━━━\n© bmb tech`;
+                                const hdr = `📌 *DELETED MSG*\n━━━━━━━━━━━━━━━━\nTime: ${deleteTime}\nChat: ${groupName}\nType: ${messageType}\nDeleted by: @${deleter}\nSender: @${sender.split('@')[0]}\n━━━━━━━━━━━━━━━━\n© Ghost Tech`;
                                 if (voMedia.image) { const buf = await downloadMedia(client, voMedia.image, 'image'); await client.sendMessage(botJid, { image: buf, caption: hdr + '\n\n👁️ *Deleted View Once Image*', mentions: [sender] }); }
                                 else if (voMedia.video) { const buf = await downloadMedia(client, voMedia.video, 'video'); await client.sendMessage(botJid, { video: buf, caption: hdr + '\n\n👁️ *Deleted View Once Video*', mentions: [sender] }); }
                                 else { await client.sendMessage(botJid, { text: hdr + '\n\n👁️ *Deleted View Once (media unavailable)*', mentions: [sender] }); }
@@ -757,7 +757,7 @@ export default async (client, m, chatUpdate, store) => {
                                 const newInner = extractInnerMessage(newMessage);
                                 const newText = newInner.conversation || newInner.extendedTextMessage?.text || newInner.imageMessage?.caption || newInner.videoMessage?.caption || '';
                                 if (newText) {
-                                    let fullMsg = `📌 *EDITED MSG*\n━━━━━━━━━━━━━━━━\nTime: ${editTime}\nChat: ${groupName}\nEdited by: @${editor}\n━━━━━━━━━━━━━━━━\n© bmb tech`;
+                                    let fullMsg = `📌 *EDITED MSG*\n━━━━━━━━━━━━━━━━\nTime: ${editTime}\nChat: ${groupName}\nEdited by: @${editor}\n━━━━━━━━━━━━━━━━\n© Ghost Tech`;
                                     if (originalText) fullMsg += `\n\nOriginal:\n${originalText}`;
                                     else fullMsg += `\n\n📌 *Original message not in cache.*`;
                                     fullMsg += `\n\nEdited to:\n${newText}`;
