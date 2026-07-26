@@ -341,7 +341,7 @@ async function resolveLidForStatus(sock, rawLidJid) {
         }
       }
     }
-  } catch (e) { console.log(`[LID] Group scan error: ${e.message}`); }
+ } catch (e) { console.log(`[LID] Group scan error: ${e.message}`); }
   try {
     const phone = await resolvePhoneFromLidAsync(rawLidJid);
     if (phone && typeof phone === 'string') {
@@ -422,7 +422,7 @@ async function startToxic() {
       clearTimeout(global._toxicReconnectTimer);
       global._toxicReconnectTimer = null;
     }
-
+    
     if (cleanupInterval) clearInterval(cleanupInterval);
     if (memoryCheckInterval) clearInterval(memoryCheckInterval);
     if (autobioInterval) clearInterval(autobioInterval);
@@ -486,7 +486,7 @@ async function startToxic() {
 
     let settingss = await getCachedSettings();
     if (!settingss) {
-      console.log('❌ NOVA-XMD FAILED TO CONNECT - Settings not found');
+      console.log('❌ GHOST-XMD FAILED TO CONNECT - Settings not found');
       global._toxicIsStarting = false;
       return;
     }
@@ -654,9 +654,9 @@ async function startToxic() {
           client.updateProfileStatus(`${botname} 𝐢𝐬 𝐚𝐜𝐭𝐢𝐯𝐞 𝟐𝟒/𝟕\n\n${date.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })} 𝐈𝐭'𝐬 𝐚 ${date.toLocaleString('en-US', { weekday: 'long', timeZone: 'Africa/Nairobi' })}.`);
         } catch (e) {}
       }, 60 * 1000);
-    }
+   }
 
-    const processedCalls = new Set();
+   const processedCalls = new Set();
     processedCallsInterval = setInterval(() => { processedCalls.clear(); }, 10 * 60 * 1000);
 
     client.ws.on('CB:call', async (json) => {
@@ -757,7 +757,7 @@ async function startToxic() {
                 } catch (e) {
                   _posterJid = _rawP;
                 }
-              }
+             }
 
               const _resolvedKey = _posterJid ? { ...mek.key, participant: _posterJid } : mek.key;
 
