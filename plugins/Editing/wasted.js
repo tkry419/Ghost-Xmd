@@ -1,48 +1,101 @@
-import { Sticker, createSticker, StickerTypes } from 'wa-sticker-formatter';let canvacord = null; try { canvacord = (await import("canvacord")).default ?? (await import("canvacord")); } catch {}
+import { Sticker } from 'wa-sticker-formatter';
 import { sendInteractive } from '../../lib/sendInteractive.js';
 
-export default async (context) => {
-        const { client, m, Tag, botname } = context;
-        await client.sendMessage(m.chat, { react: { text: '⌛', key: m.reactKey } });
-
-let cap = `📌 *WASTED*\n━━━━━━━━━━━━━━━━\nConverted By ${botname}\n━━━━━━━━━━━━━━━━\n© Ghost Tech`;
-
-await client.sendMessage(m.chat, { react: { text: '⌛', key: m.reactKey } });
+let canvacordModule;
 
 try {
+    canvacordModule = await import('canvacord');
+} catch (error) {
+    console.error('Failed to import canvacord:', error);
+}
+
+export default async (context) => {
+    const { client, m, Tag, botname } = context;
+
+    const fallbackImage =
+        'https://telegra.ph/file/9521e9ee2fdbd0d6f4f1c.jpg';
+
+    const cap = `📌 *WASTED*
+━━━━━━━━━━━━━━━━
+Converted By ${botname}
+━━━━━━━━━━━━━━━━
+© Ghost Tech`;
+
+    await client.sendMessage(m.chat, {
+        react: { text: '⌛', key: m.reactKey }
+    });
+
+    try {
+        if (!canvacordModule) {
+            throw new Error('Canvacord failed to load');
+        }
+
+        const Canvacord =
+            canvacordModule.default ?? canvacordModule;
+
+        let target;
+        let img;
 
         if (m.quoted) {
-            try {
-                img = await client.profilePictureUrl(m.quoted.sender, 'image')
-            } catch {
-                img = "https://telegra.ph/file/9521e9ee2fdbd0d6f4f1c.jpg"
-            }
-                        result = await canvacord.Canvacord.wasted(img);
-        } else if (Tag) {
-            try {
-                ppuser = await client.profilePictureUrl(Tag[0] || m.sender, 'image')
-            } catch {
-                ppuser = 'https://telegra.ph/file/9521e9ee2fdbd0d6f4f1c.jpg'
-            }
-                        result = await canvacord.Canvacord.wasted(ppuser);
-        } 
+            target = m.quoted.sender;
+        } else if (Tag?.length) {
+            target = Tag[0];
+        } else {
+            throw new Error('Reply to a message or tag a user.');
+        }
 
+        try {
+            img = await client.profilePictureUrl(target, 'image');
+        } catch {
+            img = fallbackImage;
+        }
 
-        let sticker = new Sticker(result, {
-            pack: `Triggred`,
-            author:"" ,
+        if (typeof Canvacord?.Canvacord?.wasted !== 'function') {
+            throw new Error(
+                'Canvacord.wasted is unavailable in this version'
+            );
+        }
+
+        const result = await Canvacord.Canvacord.wasted(img);
+
+        if (!result) {
+            throw new Error('Canvacord returned no image');
+        }
+
+        const sticker = new Sticker(result, {
+            pack: 'Triggered',
+            author: 'Ghost Tech',
             categories: ['🤩', '🎉'],
-            id: '12345',
             quality: 75,
             background: 'transparent'
-        })
-        const stikk = await sticker.toBuffer()
-       await client.sendMessage(m.chat, {sticker: stikk})
-       await client.sendMessage(m.chat, { react: { text: '✅', key: m.reactKey } });
+        });
 
-} catch (e) {
+        const stickerBuffer = await sticker.toBuffer();
 
-await client.sendMessage(m.chat, { react: { text: '❌', key: m.reactKey } });
-sendInteractive(client, m, `❌ *ERROR*\n━━━━━━━━━━━━━━━━\nSomething wrong occured.\nTry again, loser.\n━━━━━━━━━━━━━━━━\n© Ghost Tech`)
+        await client.sendMessage(m.chat, {
+            sticker: stickerBuffer
+        });
 
-}
+        await client.sendMessage(m.chat, {
+            react: { text: '✅', key: m.reactKey }
+        });
+
+    } catch (error) {
+        console.error('Wasted command error:', error);
+
+        await client.sendMessage(m.chat, {
+            react: { text: '❌', key: m.reactKey }
+        });
+
+        await sendInteractive(
+            client,
+            m,
+            `❌ *ERROR*
+━━━━━━━━━━━━━━━━
+Unable to create the WASTED sticker.
+Reply to a message or tag a user, then try again.
+━━━━━━━━━━━━━━━━
+© Ghost Tech`
+        );
+    }
+};
